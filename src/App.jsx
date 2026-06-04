@@ -14,20 +14,18 @@ const App = () => {
   const mobile = useMedia("(max-width: 40rem)");
 
   const apiFetch = async () => {
-    let response;
-    let json;
     try {
       setLoading(true);
       setError(null);
-      response = await fetch("https://api.adviceslip.com/advice");
-      json = await response.json();
+      const response = await fetch("https://api.adviceslip.com/advice");
       if (!response.ok) throw new Error("There was an error with the search.");
+      const json = await response.json();
+      setData(json);
     } catch (err) {
       setError(err);
-      json = null;
+      setData(null);
     } finally {
       setLoading(false);
-      setData(json);
     }
   };
 
@@ -35,22 +33,21 @@ const App = () => {
     apiFetch();
   }, []);
 
-  if (error) return <p>{error}</p>;
+  if (error) return <p role="alert">{error.message}</p>;
   if (loading) return <Loading />;
-  if (data)
-    return (
-      <div className="wrapper">
-        <h1 className="title">Advice #{data.slip.id}</h1>
-        <p className="text">"{data.slip.advice}"</p>
+  if (!data) return null;
+  return (
+    <div className="wrapper">
+      <h1 className="title">Advice #{data.slip.id}</h1>
+      <p className="text">"{data.slip.advice}"</p>
 
-        {mobile ? <DividerMobile /> : <DividerDesktop />}
+      {mobile ? <DividerMobile /> : <DividerDesktop />}
 
-        <button aria-label="Generate another advice" onClick={apiFetch} className="button">
-          <Icon />
-        </button>
-      </div>
-    );
-  else return null;
+      <button aria-label="Generate another advice" onClick={apiFetch} className="button">
+        <Icon />
+      </button>
+    </div>
+  );
 };
 
 export default App;
