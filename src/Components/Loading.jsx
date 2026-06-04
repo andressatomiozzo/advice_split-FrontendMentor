@@ -1,7 +1,7 @@
-const Loading = () => {
-  return (
-    <div>Loading...</div>
-  )
-}
+import styles from "./Loading.module.css";
 
-export default Loading
+const Loading = () => {
+  return <div className={styles.loading}></div>;
+};
+
+export default Loading;
